@@ -15,4 +15,4 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_perseus.mk
+    $(LOCAL_DIR)/twrp_perseus.mk
