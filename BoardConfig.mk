@@ -43,6 +43,7 @@ TARGET_BOARD_PLATFORM := sdm845
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno630
 
 # Kernel
+BOARD_BOOTIMG_HEADER_VERSION := 1
 BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0xA84000 androidboot.hardware=qcom androidboot.console=ttyMSM0 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 service_locator.enable=1 swiotlb=2048 androidboot.configfs=true firmware_class.path=/vendor/firmware_mnt/image loop.max_part=7 androidboot.usbcontroller=a600000.dwc3 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
@@ -52,9 +53,8 @@ BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image.gz-dtb
-#BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
-#BOARD_INCLUDE_RECOVERY_DTBO := true
-#BOARD_BOOTIMG_HEADER_VERSION := 1
+BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
+BOARD_INCLUDE_RECOVERY_DTBO := true
 #BOARD_MKBOOTIMG_ARGS := --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 #BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 #BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
@@ -85,9 +85,13 @@ BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 BOARD_ROOT_EXTRA_FOLDERS := bluetooth dsp firmware persist
 BOARD_SUPPRESS_SECURE_ERASE := true
 
-# File systems
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
+# Avb
+BOARD_AVB_ENABLE := true
+BOARD_AVB_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
+BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
+BOARD_AVB_RECOVERY_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
 
 # Workaround for error copying vendor files to recovery ramdisk
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -95,11 +99,16 @@ TARGET_COPY_OUT_VENDOR := vendor
 
 # Recovery
 BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
+TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
 
 # Crypto
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_FBE := true
+PLATFORM_SECURITY_PATCH := 2099-12-31
+PLATFORM_VERSION := 16.1.0
 
 # TWRP specific build flags
 TW_THEME := portrait_hdpi
@@ -118,7 +127,3 @@ TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
 TARGET_USES_MKE2FS := true
 TW_EXCLUDE_TWRPAPP := true
-
-# Hack: prevent anti rollback
-PLATFORM_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 16.1.0
